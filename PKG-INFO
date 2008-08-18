@@ -1,0 +1,13 @@
+Metadata-Version: 1.0
+Name: ttb
+Version: 0.9.4
+Summary: TTB Teletekst Browser
+Home-page: http://www.djcbsoftware.nl/code/ttb
+Author: Dirk-Jan C. Binnema
+Author-email: djcb@djcbsoftware.nl
+License: GPL
+Description: 
+        TTB Teletekst Browser is a small browser for the Teletekst system
+        as used in The Netherlands, and provides a convenient way to stay
+        up to date with news, sports, weather, stock exchange and what not
+Platform: UNKNOWN

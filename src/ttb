@@ -1,0 +1,821 @@
+#!/usr/bin/env python
+# -*-mode:python-*-*
+# Time-stamp: <2005-10-01 16:59:46 (djcb)>
+#
+# Browser for Teletekst pages
+#
+# -------------------------------------------------------------------------
+#
+# Copyright 2004,2005 Dirk-Jan C. Binnema
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# -------------------------------------------------------------------------
+#
+# The current version of GPL is at http://www.gnu.org/licenses/gpl.txt
+#
+# -------------------------------------------------------------------------
+#
+# The purpose of this program is to view Teletekst pages, as provided
+# by teletekst.nos.nl.
+#
+# Please visit http://www.djcbsoftware.nl/code/ttb for more information.
+#
+# -------------------------------------------------------------------------
+
+
+
+# import some stuff
+import sys,httplib,urllib2,os,tempfile,time,random
+import pygtk
+pygtk.require("2.0")
+import gtk, gtk.glade
+from HTMLParser import HTMLParser
+
+ttb_version = '0.9.4'
+ttb_user_agent = "TTB/" + ttb_version
+ttb_title = "TTB Teletekst Browser"
+ttb_cache_time = 300
+ttb_max_history = 50
+
+ttb_debug = 0
+
+#
+# our main application class
+#
+class TTB:
+    def __init__ (self,glade,icon,page):
+       
+        self.network = Network()
+        self.model   = PageManager(self.network,page)
+
+        self.gui     = GUI(glade,icon,self.model);
+
+        self.gui.start()
+
+
+#
+# the PageManager is the 'model' and the 'control' that manages the data
+# about the current page
+#
+class PageManager:
+ 
+    class History:
+        
+        hist = []
+        cursor  = 0
+        
+        def append (self,page):
+            # throw away future
+            del self.hist [self.cursor+1:]
+            self.hist.append (page)
+            # throw away ancient history
+            if (len(self.hist) > ttb_max_history):
+                del self.hist[0:(len(self.hist) - ttb_max_history -1)]
+            self.cursor = len(self.hist) - 1    
+            
+                
+        def current (self):
+            if len (self.hist) == 0:
+                return None
+            else:
+                return self.hist[self.cursor]
+
+        def forward (self):
+            self.cursor = self.cursor + 1
+            if self.cursor >= len(self.hist):
+                self.cursor = len(self.hist) - 1
+            return self.current()
+        
+        def backward (self):
+            self.cursor = self.cursor - 1
+            if self.cursor < 0:
+                self.cursor = 0
+            return self.current()
+
+
+    metainfo = None
+    history  = History ()
+
+    def __init__ (self,network,page):
+        self.network       = network
+        self.image_file    = ''
+        self.metainfo      = None
+        self.page          = (0,0)
+        self.page          = self.goto_page(page)
+    
+    def get_image_file (self):
+        return self.image_file
+
+    def get_page (self):
+        return self.page
+    
+    # move to another page; in case the page changes.
+    # the subpage will be set to !
+    def goto_neighbour_page (self,prev=0,sub=0):
+
+        neighbour_page = self.metainfo.neighbour_page (self.page,prev,sub)
+
+        if neighbour_page==None:
+            delta = (+1,-1)[prev]
+            neighbour_page = self.page
+            if sub:
+                neighbour_page[1] = neighbour_page[1] + delta
+            else:
+                neighbour_page[0] = neighbour_page[0] + delta
+          
+        return self.goto_page (neighbour_page)
+    
+                                               
+    def goto_page (self,page,nocache=0,add_to_history=1):
+            
+        if 100>page[0] or page[0]>999:
+            page = (100,1)
+        if page[1] < 1 or page[1] > 99:
+            page = (page[0],1)
+
+        new_image = ''
+        metainfo = None
+        
+        try:
+            (new_image,metainfo) = self.network.retrieve_page (page, nocache)
+            if add_to_history:
+                self.history.append (page)
+        except:      
+            if (page[1] != 1):
+                page[1] = 1
+                return self.goto_page (page,nocache,add_to_history)
+            else:    
+                print "error retrieving page " + str(page)
+                self.image_file = self.network.retrieve_error_page()
+                return self.page 
+                               
+        self.image_file = new_image
+        self.metainfo = metainfo
+        self.page = page
+
+        return self.page
+
+    def cleanup (self):
+        del self.network
+
+
+#
+# the GUI class handles all of the GTK UI things; the actual layout comes
+# from the glade string
+#    
+class GUI:
+
+    class Size:
+
+        SMALLER = -1
+        BIGGER  =  1
+        NORMAL  =  0
+
+        sizes = [[0.7, 0.7],
+                 [1.0, 1.0],
+                 [1.5, 1.5],
+                 [2.0, 2.0],
+                 [3.0, 3.0]]
+        current = 1
+
+        def __init__ (self):
+            self.current = 1 # start at 100%
+
+        def factor (self):
+            return self.sizes[self.current]
+
+        def grow (self):
+            self.current = self.current + 1
+            if self.current >= len (self.sizes):
+                self.current = len (self.sizes) - 1
+                
+        def shrink (self):
+            self.current = self.current - 1 
+            if self.current < 0:
+                self.current = 0
+
+        def normalize (self, cursor):
+            return [int(cursor[0] / self.factor()[0]),
+                    int(cursor[1] / self.factor()[1])]
+
+                   
+    def __init__(self, glade, icon, model):
+
+       # the model is a PageManager instance
+       self.model = model
+
+       self.size  = self.Size()
+       
+       self.in_progress = 0
+       self.cursor_restore = None
+
+       # whether new number in entry should replace old one
+       # or merely edit
+       self.entry_replace = 1  
+              
+       # the main window
+       self.widgets = gtk.glade.XML (glade,'window_main')
+       self.widgets.signal_autoconnect (self)
+
+       # the main window
+       self.main_window        = self.widgets.get_widget('window_main')
+
+       try:
+           self.main_window.set_icon_from_file (icon)
+       except:
+           print "icon not supported with this version of pygtk"
+
+       # some more widgets
+       self.page_num_entry     = self.widgets.get_widget('entry_page')
+       self.sub_page_num_entry = self.widgets.get_widget('entry_subpage')
+       self.image_holder       = self.widgets.get_widget('image_holder')
+       self.button_next        = self.widgets.get_widget('button_next')
+       self.button_prev        = self.widgets.get_widget('button_prev')
+       self.main_vbox          = self.widgets.get_widget('vbox_main')
+
+       # destroy
+       self.main_window.connect ('destroy',self.on_exit)
+       self.widgets.get_widget('button_exit').connect('clicked',self.on_exit)
+       
+       # can receive window events
+       self.image_holder.add_events(gtk.gdk.POINTER_MOTION_MASK|gtk.gdk.LEAVE_NOTIFY_MASK)
+       
+       self.image_holder.connect('button_press_event', self.on_image_button_press_event)
+       self.image_holder.connect('motion_notify_event', self.on_image_motion_notify_event)
+       self.image_holder.connect('leave_notify_event', self.on_image_leave_notify_event)
+
+       self.image_holder.show()
+       
+       # setup d&d
+       self.image_holder.drag_source_set (gtk.gdk.BUTTON1_MASK,[("text/uri-list",0,1)],
+                                          gtk.gdk.ACTION_COPY)
+       self.image_holder.connect('drag_data_get',self.on_drag_data_get)
+       
+    def start (self):
+        self.update()
+        gtk.main()
+
+    def goto_page(self,page,nocache=0,add_to_history=1):
+        self.look_busy(1)
+        self.page = self.model.goto_page(page,nocache,add_to_history)
+        
+        self.update()
+        self.look_busy(0)                
+                
+    def goto_neighbour_page (self,prev=0,sub=0):
+        self.look_busy(1)
+        self.page = self.model.goto_neighbour_page(prev,sub)
+        self.update()
+        self.look_busy(0)
+
+    def resize (self,how):
+        self.look_busy(1)
+
+        if how == self.size.NORMAL:
+            self.size.back_to_normal()
+        elif how == self.size.SMALLER:
+            self.size.shrink ()
+        elif how == self.size.BIGGER:
+            self.size.grow()
+        else:
+            raise "illegal size for zooming"
+            
+        self.update()
+        self.look_busy(0)
+
+    def update (self):        
+        image_file = self.model.get_image_file()
+        
+        if len(image_file) != 0:
+            image = self.image_holder.get_child()
+            if image:
+                self.image_holder.remove(image)
+                image.destroy()
+
+            image = gtk.Image()
+
+            # maybe we need to scale the image...
+            factor = self.size.factor()
+            if factor[0] == 1.0 and factor[1] == 1.0:
+                image.set_from_file (image_file)
+            else:
+                pixbuf = gtk.gdk.pixbuf_new_from_file (image_file)
+                (w,h)  = (pixbuf.get_width(),pixbuf.get_height())
+
+                # for integer zooming, nearest point is faster and better
+                if int(factor[0]) == factor[0] and  int(factor[1]) == factor[1]:
+                    method = gtk.gdk.INTERP_NEAREST
+                else:
+                    method = gtk.gdk.INTERP_BILINEAR
+                
+                image.set_from_pixbuf (
+                    pixbuf.scale_simple(int(factor[0]*w),int(factor[1]*h),method))
+         
+            self.image_holder.add(image)
+            image.show()
+
+            currpage = self.model.get_page()
+            if currpage != None:
+                self.page_num_entry.set_text(str(currpage[0]))
+                self.sub_page_num_entry.set_text(str(currpage[1]))        
+                self.main_window.set_title ('%s [%d/%d]' % (ttb_title, currpage[0], currpage[1])) 
+
+        self.image_holder.grab_focus()
+        
+    #
+    # manage the way the cursor looks, and the sensitivity
+    # of the navigation keys
+    # 
+    def look_busy (self,busy):
+
+        self.button_next.set_sensitive(not busy)
+        self.button_prev.set_sensitive(not busy)
+   
+        gdk_window  = self.main_vbox.get_parent_window()
+        if gdk_window != None:
+            if busy:
+                gdk_window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            else:
+                gdk_window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+
+            gtk.main_iteration(0)
+
+    def refresh (self):
+        self.look_busy(1)
+        self.goto_page(self.model.get_page(),1,0) # don't add to hist
+        self.look_busy(0)
+        return            
+                
+    def on_button_press_event (self,button,event):
+
+        sub  = event.button == 3
+        prev = (0,1)[button.get_name() == 'button_prev']
+        
+        self.goto_neighbour_page (prev,sub)
+
+    def on_drag_data_get (self,widget,context,selection,target_type,event_time):
+        uri = 'file://' + self.model.get_image_file()
+        selection.set (selection.target,8,uri)
+
+    # called when a key is pressed while we are inside the entry box
+    # for page numbers
+    def on_entry_key_press_event (self,widget,event,data=None):       
+
+        if event.keyval in [gtk.keysyms.Return,gtk.keysyms.KP_Enter]:
+            self.goto_page ([int(self.page_num_entry.get_text()),
+                            int(self.sub_page_num_entry.get_text())])
+            self.image_holder.grab_focus()
+            self.entry_replace = 1
+            return 0
+        else:
+            # numbers are ok, including keypad numbers
+            if event.keyval in (range(gtk.keysyms._0,gtk.keysyms._9 + 1) +
+                                range(gtk.keysyms.KP_0,gtk.keysyms.KP_9 + 1)): 
+                if self.entry_replace:
+                    widget.set_text('')
+                    self.entry_replace = 0
+                return 0
+            # and so are the basic editing keys
+            # also support keypad...
+            if event.keyval in [gtk.keysyms.BackSpace,
+                                 gtk.keysyms.Delete,
+                                 gtk.keysyms.Left,     gtk.keysyms.KP_Left,
+                                 gtk.keysyms.Right,    gtk.keysyms.KP_Right,
+                                 gtk.keysyms.Home,
+                                 gtk.keysyms.End,      
+                                 gtk.keysyms.Tab,      gtk.keysyms.KP_Tab]:
+                return 0
+
+            # ignore the rest
+            return 1
+
+    # refresh the page
+    def on_button_refresh_clicked (self, *args):
+        self.refresh()
+
+                       
+    # show the about box
+    def on_button_about_clicked (self,*args):
+        
+        txt = "TTB Teletekst Browser, version " + ttb_version
+        txt = txt + "\nCopyright 2004, 2005 Dirk-Jan C. Binnema\n" \
+              "http://www.djcbsoftware.nl/code/ttb\n\n" \
+              "This program is Free Software under the terms of the GPL"
+            
+        dialog = gtk.MessageDialog(self.main_window,
+                                    gtk.DIALOG_MODAL |gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    gtk.MESSAGE_INFO,
+                                    0, txt)
+        dialog.run()
+               
+    def on_image_button_press_event (self,*args):
+
+        if self.model.metainfo != None:
+            page = self.model.metainfo.get_page(
+                self.size.normalize(self.image_holder.get_pointer())) 
+            if page != None:
+                self.goto_page(page)
+       
+    def on_image_motion_notify_event (self,*args):
+
+        if self.model.metainfo != None:
+            gdk_win = self.image_holder.get_parent_window()        
+            page = self.model.metainfo.get_page(
+                self.size.normalize(self.image_holder.get_pointer())) 
+            if page != None:
+                gdk_win.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            else:
+                gdk_win.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+      
+    def on_image_leave_notify_event (self,*args):
+        # restore the old cursor
+        self.image_holder.get_parent_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+
+    # keybindings...
+    def on_window_main_key_press_event(self,widget,event,data=None):
+
+        shiftpressed = event.state & gtk.gdk.SHIFT_MASK
+
+        # pages, subpages
+        if event.keyval in [gtk.keysyms.Page_Up,gtk.keysyms.KP_Page_Up]:
+            if shiftpressed:
+                self.goto_neighbour_page (1,1) # previous subpage
+            else:
+                self.goto_neighbour_page(1,0) # previous page
+            return
+        elif event.keyval in [gtk.keysyms.Page_Down,gtk.keysyms.KP_Page_Down]:
+            if shiftpressed:
+                self.goto_neighbour_page(0,1) # next subpage
+            else:
+                self.goto_neighbour_page(0,0) # next page
+            return
+
+        # history
+        altpressed = event.state & gtk.gdk.MOD1_MASK
+        if event.keyval in [gtk.keysyms.Left,gtk.keysyms.KP_Left] and altpressed:
+            self.goto_page(self.model.history.backward(),0,0) # previous page in hist
+        elif event.keyval in [gtk.keysyms.Right,gtk.keysyms.KP_Right] and altpressed:
+            self.goto_page(self.model.history.forward(),0,0) # next page in hist
+
+        # home
+        if event.keyval in [gtk.keysyms.Home, gtk.keysyms.KP_Home]:
+            self.goto_page([100,1],0,0)
+            return
+                
+        # exit
+        if event.keyval in [gtk.keysyms.Escape]:
+            self.on_exit()
+            return
+
+        # zoom in 
+        if event.keyval in [ gtk.keysyms.plus, gtk.keysyms.KP_Add ]:
+            self.resize (self.size.BIGGER)
+            return
+        # zoom out
+        if  event.keyval in [ gtk.keysyms.minus, gtk.keysyms.KP_Subtract ]:
+            self.resize (self.size.SMALLER)
+            return
+        # other keys
+        if event.keyval < 256:
+            key = chr(event.keyval).lower()
+
+            if key in ['q','x']: # exit the program
+                self.on_exit()
+                return
+            if key in ['r']: # refresh
+                self.refresh()            
+                       
+            if key.isdigit() \
+            and not self.page_num_entry.is_focus() \
+            and not self.sub_page_num_entry.is_focus():
+                self.page_num_entry.grab_focus()
+            
+                                            
+    def on_exit (self,*args):
+        self.model.cleanup()
+        gtk.main_quit()
+            
+
+#
+# MetaInfo parses the webpage corresponding to the teletekst page,
+# 1) to gather the 'area=' information from the clickable
+# GIF in the webpage, so we can have clickable pagenumbers as well
+# 2) to check the page number for prev/next links (idea Job Ganzevoort)
+#
+class MetaInfo (HTMLParser):
+
+    # members to store info about prev/next pages and subpages
+    prev     = None
+    next     = None
+    next_sub = None
+    prev_sub = None
+    
+    # get information on the neigbour page
+    # prev: get previous page? (bool)
+    # sub: get sub page? (bool)
+    def neighbour_page (self,page,prev=0,sub=0):
+
+        neighbour = None
+        
+        if prev:            
+            if sub:
+                neighbour =  [page[0], self.prev_sub]
+            else:
+                neighbour =  [self.prev, 1]
+        else:
+            if sub:
+                neighbour = [page[0], self.next_sub]
+            else:
+                neighbour = [self.next, 1]
+                
+        if neighbour[0] == None or neighbour[1] == None:
+            return None
+        else:
+            return neighbour
+                
+                                    
+    # helper class to store clickability information
+    # about positions in our image
+    class Area:
+        def __init__ (self,nw,se,page):
+
+           self.nw    = nw
+           self.se    = se
+           self.page  = page
+           
+        def page():
+            return self.page
+        
+        def match (self,coor):    
+            return coor[0]>=self.nw[0] and coor[0]<=self.se[0] and \
+                   coor[1]>=self.nw[1] and coor[1]<=self.se[1]
+
+
+    def __init__ (self,page):
+
+        HTMLParser.__init__(self)
+        self.page = page
+        self.in_the_map = 0
+        
+        self.areas = []
+        self.neighbours = None
+
+    # return the page number if the cursor is in it, or None otherwise
+    def get_page (self,coor):
+        for area in self.areas:
+            if area.match (coor):
+                return area.page
+        return None
+
+    def handle_starttag(self, tag, attrs):
+
+        # handle the area info inside the map
+        if tag == 'map':
+
+            if attrs != None and attrs[0] == ('name',self.page):
+                self.in_the_map= 1
+               
+        elif self.in_the_map and tag == 'area':
+
+            if attrs != None:
+                page = None
+                nw   = None # north-west
+                se   = None # south-east
+                for attr in attrs:
+                    # get the coords attribute
+                    if attr[0]=='coords':
+                        coords=attr[1].split(',')
+                        nw = (int(coords[0]),int(coords[1]))
+                        se = (int(coords[2]),int(coords[3]))
+                    # get the href attribute, and extract page / subpage
+                    if attr[0]=='href':
+                         pagestr=attr[1].replace('.html','').split('-')
+                         page=[int(pagestr[0]),int(pagestr[1])]
+                    if page != None and nw != None and se != None: 
+                         area = MetaInfo.Area (nw,se,page)
+                         self.areas.append (area)
+                         return
+
+        # handle the href info which will tell us what is
+        # the next/prev page and subpage
+        elif tag == 'a':
+            if attrs != None and attrs[0][0] == 'href':
+                self.href = attrs[0][1]
+                
+        elif tag == 'img' and self.href != None:
+            for a in attrs:         
+                if a[0] == 'src':                    
+                    if a[1]=='/gfx/i-buttons/back.gif':
+                        self.prev = int(self.href[0:3])
+                    elif a[1]=='/gfx/i-buttons/sub_back.gif':
+                        self.prev_sub = int(self.href[4:6])
+                    elif a[1]=='/gfx/i-buttons/sub_forward.gif':
+                        self.next_sub = int(self.href[4:6])
+                    elif a[1]=='/gfx/i-buttons/forward.gif':
+                        self.next = int(self.href[0:3])
+                        
+                        
+    def handle_endtag(self, tag):
+        if tag == 'map' and self.in_the_map:
+            self.in_the_map = 0
+        self.href = None
+
+    def dump(self):
+        for area in self.areas:
+            print str(area.page) + '=>' + str(area.nw) + "-" + str(area.se)
+
+class Network:
+
+    def __init__ (self):        
+       
+        # install proxy support if http_host is set
+        proxy = os.getenv('http_proxy')
+        if proxy != None:
+            proxy_handler = urllib2.ProxyHandler({'http':proxy})
+            self.opener = urllib2.build_opener(proxy_handler)
+        else:
+            self.opener = urllib2.build_opener()
+            
+        self.tempdir = self.get_tempdir ()
+             
+        urllib2.install_opener(self.opener)
+        
+    def __del__ (self):
+        if self.tempdir != None:
+            try:
+                for f in os.listdir (self.tempdir):
+                    os.unlink (self.tempdir + '/' + f)
+                os.rmdir(self.tempdir)
+            except:
+                print 'failed to remove tmpdir: ' + self.tempdir
+            
+    # get us a temp dir with fallback for old python
+    def get_tempdir (self):
+        try:    
+            # this should work for python 2.3+
+            return tempfile.mkdtemp()
+        except:
+            # this is our ugly hack for old python
+            # if you are really unlucky, it will fail
+            print "old python"
+            random.seed()
+            tmp = tempfile.gettempdir() + "/" + str(random.random())
+            if os.access(tmp,os.F_OK):
+                return self.get_tempdir () # ugly
+            os.mkdir (tmp,0700)
+            return tmp
+
+    # do the network transfer
+    def http_get (self,url):
+        request = urllib2.Request (url)
+        request.add_header('User-Agent',ttb_user_agent);
+        request.add_header('Accept',
+                           'text/xml,application/xml,application/xhtml+xml,' +
+                           'text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5')
+        
+        return self.opener.open(request).read()
+
+    
+    # retrieve the page
+    def retrieve_page (self, page, nocache=0):
+
+        pagename = str(page[0]) + "-" +  ("0"+str(page[1]))[-2:]
+
+        localimg  = self.tempdir + "/" + pagename + '.gif'
+        localhtml = self.tempdir + "/" + pagename + '.html'    
+
+        # do we really need to retrieve it over the network?
+        retrieve_from_network = nocache \
+                                or not os.access(localimg,os.F_OK) \
+                                or time.time() - os.stat(localimg).st_mtime > ttb_cache_time
+                    
+        # download img if it's not in the cache
+        if retrieve_from_network:                        
+
+            # gif image to retrieve
+            gif = 'http://teletekst.nos.nl/gif/images/' + pagename + '.gif'
+            
+            try:
+                data = self.http_get (gif)
+            except:
+                raise "could not retrieve " + gif
+                
+            # save the gif to a tempfile
+            imgfile = open (localimg,'w')
+            imgfile.write (data)
+            imgfile.close()
+
+            # html to retrieve
+            # 'replace' or htmlparser won't like our html
+            html = 'http://teletekst.nos.nl/gif/' + pagename + '.html'
+            try:
+                data = self.http_get(html).replace('<script','<!--').replace('</script>','-->')
+            except:
+                raise "could not retrieve " + html
+                
+            htmlfile = open (localhtml,'w')
+            htmlfile.write (data)
+            htmlfile.close()
+            
+        else:
+            htmlfile = open (localhtml,'r')
+            data = htmlfile.read()
+            htmlfile.close()
+
+        metainfo = MetaInfo(pagename)
+        metainfo.feed (data)
+
+        return localimg, metainfo
+
+    def retrieve_error_page (self):
+
+        localerr = self.tempdir + '/notfound.gif'
+        
+        if not os.access (localerr,os.F_OK):
+            errorgif = 'http://teletekst.nos.nl/images/page_na1.gif'
+            try:
+                data = self.http_get (errorgif)
+            except:
+                raise "could not retrieve " + errorgif
+    
+            # save the gif to a tempfile
+            imgfile = open (localerr,'w')
+            imgfile.write (data)
+            imgfile.close()
+
+        return localerr
+
+
+# find our library dirs, inspired by Straw
+def get_data_dir ():
+
+    if os.environ.has_key("TTB_DATA"):
+        return os.environ["TTB_DATA"]
+
+    h,t = os.path.split(os.path.split(os.path.abspath(sys.argv[0]))[0])
+    if t == 'bin':
+        fp = os.path.join (h, 'share')
+        if os.path.isdir (fp):
+            return fp
+
+    raise "Could not find data directory"
+
+
+def get_data_file (name):
+
+    datadir = get_data_dir ()
+    fp = os.path.join (datadir, name)
+    if os.path.isfile(fp):
+        return fp
+
+    raise "Could not find " + name
+
+
+
+def main (argv=None):
+
+    try:
+    
+        if argv == None:
+            argv = sys.argv
+
+        page = [100,1]
+
+        if (argv != None):
+            if len(argv) == 2:
+                page = [int(argv[1]),1]
+            if len(argv) > 2:
+                page = [int(argv[1]),int(argv[2])]
+
+        glade = get_data_file ('ttb/ttb.glade')
+        icon  = get_data_file ('pixmaps/ttb.png')
+         
+        TTB(glade, icon, page)
+
+    except KeyboardInterrupt:
+	return 0 
+
+    except:
+        print "Fout:" , sys.exc_info()[0]
+        return 1
+     
+    return 0
+
+# ttb: arise!
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
+    
+# the end
