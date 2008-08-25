@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+<title>ttb homepage</title></head>
+
+<body><img src="ttb.png" align="right">
+<h1>ttb teletekst browser</h1>
+<tt>ttb</tt> is een programma om Teletekstpagina's te bekijken via internet; <a href="http://www.omroep.nl/">www.omroep.nl</a> biedt al iets dergelijks aan, maar de programma's zijn alleen bruikbaar voor <em>Windows</em> en <em>MacOS</em>. ttb is geschreven voor Unix/Linux, maar zou het ook op andere platforms moeten doen.
+<p>ttb is geschreven door <strong>Dirk-Jan Binnema</strong> (djcb), met hulp van anderen. <a href="mailto:djcb@djcbsoftware.nl?subject=ttb">mail mij</a>, of <a href="http://www.djcbsoftware.nl/ChangeLog">lees mijn blog</a>, of mijn <a href="http://www.advogato.org/person/djcb">advogato-blog</a>.
+Ik sta open voor suggesties en bugrapports; vermeld graag zo veel
+mogelijke relevante details zoals versies van Python, PyGTK,
+distributie enzovoort.
+</p><p><tt>ttb</tt> is beschikbaar volgens de voorwaarden van de <a href="http://www.gnu.org/licenses/gpl.txt">GPLv2 of hoger</a>.
+</p><h2>nieuws</h2>
+<ul>
+  <li>[27/11/2005]: <strong>Versie 0.9.4</strong> is nu beschikbaar; wederom geen grote wijzigingen, maar de installieprocedure is verder verbeterd; dat wil zeggen dat er een duidelijker foutmelding volgt in het geval er iets niet goed ge&iuml;nstalleerd is. In de meeste gevallen waar het fout gaat, blijkt de oorzaak het ontbreken van <tt>python-dev</tt> te zijn In heel veel gevallen werkt alles feilloos, na installatie daarvan. Op verschillende distributies heeft het pakket een verschillende naam, bijvoorbeeld:
+  <ul>
+   <li><tt>python2.x-setuptools</tt> (2.x = 2.3/2.4/...)  [Debian, Ubuntu,...]
+   <li><tt>python-dev</tt>  [Debian/Etch]
+   <li><tt>python-devel</tt> [Novell/Suse]
+   <li><tt>python2-devel</tt> [RedHat]
+   <li><tt>libpython2.4-devel</tt> [Mandriva] (version may be different)
+  </ul>
+<P><strong>TIP</strong>: zie het kopje <em>Bediening</em> (scroll naar beneden) voor wat handige trucs.
+  <li>[01/10/2005]: <strong>Versie 0.9.3</strong> is nu beschikbaar. Er zijn geen grote veranderingen, maar mensen die voorheen problemen hadden bij het installeren, kunnen het nu nogmaals proberen. Mochten er nu nog problemen zijn, laat het me a.u.b. weten.
+  <li>[08/05/2005]: <strong>Versie 0.9.2</strong> is nu beschikbaar. Er zijn enkele kleine verbeteringen in de toetsenbordafhandeling, en ik heb de veelgevraagde 'Refresh'-knop toegevoegd. <strong>Belangrijkste</strong> verandering is echter dat ik een tarball gemaakt heb, met installatiescript etc. Zie onderaan deze pagina voor installatie-instructies. Voordeel hiervan is het ttb-pictogram nu automatisch geinstalleerd wordt, en ttb in het applicatiemenu terechtkomt. Het is getest, maar niet op elk mogelijk systeem; bugreports zijn dan ook welkom, met vermelding van wat er precies fout gaat, wat voor systeem (distributie, KDE of GNOME etc.) gebruikt wordt. "Hij doet het niet" is niet zo nuttig :-)
+<p>Meldingen dat het *wel* goed werkt zijn natuurlijk ook welkom!
+  <li>[17/04/2005]: Op dit moment wordt gewerkt aan versie 1.0;
+nieuwe features zullen (nauwelijks) meer worden toegevoegd; nadruk ligt
+nu op het verhelpen van kleine bugs, het stroomlijnen van de <em>packaging</em> enzovoort. Maar bugreports zijn erg welkom, zodat we een bugvrije(tm) versie 1.0 op de wereld kunnen loslaten.
+  </li><li>[03/04/2005]: <strong>versie 0.9.1</strong> is nu beschikbaar. De <a href="http://teletekst.nos.nl/">Teletekst pagina's</a>
+op internet waren aangepast na het 25 jarig jubileum (gefeliciteerd!),
+maar de wijzigingen zorgden ervoor dat 'slim bladeren' niet meer werkte
+(i.e. het programma begrijpt dat het voor de 'volgende pagina' van
+pagina 114 naar pagina 120 moet springen). Dat heb ik verholpen. <p>En 'zooming' kan nu ook naar 70% van de normale grootte, voor mensen met erg goede ogen.
+  </p><p><img src="ttb-icon.png" align="left">Verder bugfixes (refresh en foutafhandeling) van <strong>Job Ganzevoort</strong> en <strong>Jochem Rutgers</strong>. Daarnaast ondersteunt ttb nu de teletekst-foutpagina. En, belangrijk, er is nu een <strong>ttb pictogram</strong>
+(links). Vanaf versie 0.9 komen er alleen nog bugfixes en packaging
+bij, zodat we hopelijk snel met versie 1.0 kunnen komen, incl. RPM en
+DEB pakketten. </p></li><li>[27/03/2005]: <strong>versie 0.9</strong> is nu beschikbaar. Behalve de sporadische bugfix is de belangrijkste nieuwe feature: <strong>zooming</strong>.
+Dat wil zeggen, met behulp van de '+' en '-' toetsen kan het
+ttb-venster vergroot worden, zodat de teletekst leesbaar is, ook op een
+1600x1200 scherm, of nog hogere resoluties. Gebaseerd op werk van <strong>Job</strong> - bedankt!
+  <p>De
+features voor versie 1.0 zijn er nu wel zo'n beetje, nadruk zal nu
+liggen op wat polijsten (documentatie en packaging). Maar suggesties
+blijven welkom natuurlijk, evenals bugreports. </p></li><li>[13/03/2005]: <strong>versie 0.8</strong> is uit. Niet zoveel tijd voor ttb deze week, daarom alleen wat bugfixes en paginanummer wordt getoond in titelbalk. <strong>Job</strong>s patch voor <em>zooming</em> is hopelijk volgende week geïntegreerd.
+   <p><strong>Tip:</strong> Een wat onderbelichte <em>feature</em> is drag&amp;drop; dat wil zeggen dat je een pagina simpel van ttb naar het bureaublad of een ander programma kunt slepen.
+  </p></li><li>[06/03/2005]: <strong>versie 0.7</strong>! Dankzij wederom de ideeën en patches van <strong>Job Ganzevoort</strong> zijn er allerlei nieuwe features beschikbaar:
+  <ul>
+    <li>history-mechanisme - blader met Alt-PgUp en Alt-PgDown door eerder gekozen pagina's;
+    </li><li>caching
+- ttb houdt nu een cache bij, wat het bladeren door reeds eerder
+geraadpleegde pagina's veel sneller maakt. Pagina's in de cache hebben
+een levensduur van 5 minuten, en met 'R' (<em>refresh</em>) kan een nieuwe versie geforceerd worden;
+    </li><li>slim door de pagina's bladeren - als de huidige pagina bijv. 130 is, dan 'weet' ttb dat de volgende pagina bijv. 140 is.
+  </li></ul>
+  Verder nog de nodige kleine bugfixes, kleine gebruiksverbeteringen.
+   </li><li>[28/02/2005]: <strong>versie 0.6</strong> is nu beschikbaar; allerlei kleine verbeteringen in de user-interface. Speciale dank gaat uit naar <strong>Job Ganzevoort</strong> voor zijn testwerk en patches, en naar alle andere testers. 
+  </li><li>[24/02/2005]: vandaag ontdekte ik ook dat de <a href="http://teletekst.nos.nl/">officiële teletekst website</a> naar deze site linkt.
+  </li><li>[24/02/2005]: het blijkt dat ttb niet goed met sommige oudere versies van Python; mocht dat het geval zijn,
+  dan werkt wellicht <strong>ttb versie 0.4</strong> wèl. Zie onder het kopje 'download/installatie'.
+  Ondertussen werk ik aan een ttb die voor alle recente Python-versie werkt.
+  </li><li>[23/02/2005]: <strong>versie 0.5</strong> is uit; deze verhelpt enkele kleine bugs, zoals het buiten beeld vallen van letters bij bepaalde themes,
+  en de 'busy-wait' cursor. Verder, <tt>ttb</tt> werkt nu (hopelijk) ook met Python 2.2; (<tt>mkdtemp</tt> bestaat pas sinds 2.3). De sneltoetsen zijn een beetje aangepast.  
+  </li><li>[07/11/2004]: versie 0.4 is uit; proxy's worden nu ondersteund ('<tt>http_proxy</tt>'), toetsenbordondersteuning, geen pygtk 2.4 meer vereist, UI gestroomlijnd. 
+  </li><li>[30/10/2004]: versie 0.3 is uit; pagina's zijn nu '<strong>klikbaar</strong>'
+  </li><li>[25/10/2004]: versie 0.2; <strong>drag &amp; drop</strong> naar de desktop
+</li></ul>
+<h2>bediening</h2>
+De bediening van TTB wijst grotendeels vanzelf, maar:
+<table border="1">
+  <tbody><tr><td>Actie</td><td>Muis</td><td>Toetsenbord</td></tr>
+  <tr><td>Naar vorige pagina</td><td><strong>Linkermuisklik</strong> op pijl naar <strong>links</strong> </td><td><strong>PageUp</strong></td>
+  </tr><tr><td>Naar volgende pagina</td><td><strong>Linkermuisklik</strong> op pijl naar <strong>rechts</strong> </td><td> <strong>PageDown</strong></td>
+    </tr><tr><td>Naar vorige subpagina</td><td><strong>Rechtermuisklik</strong> op pijl naar <strong>links</strong></td><td> <strong>Shift-PageUp</strong></td>
+  </tr><tr><td>Naar volgende subpagina</td><td><strong>Rechtermuisklik</strong> op pijl naar <strong>rechts</strong></td><td> <strong>Shift-PageDown</strong></td>
+  </tr>
+   <tr><td>Naar vorige pagina in de <em>historie</em></td><td></td><td><strong>Alt-PageUp</strong></td>
+  </tr><tr><td>Naar volgende pagina in de <em>historie</em></td><td></td><td> <strong>Alt-PageDown</strong></td>
+  </tr><tr><td>Zoom-in</td><td></td><td> <strong>+</strong></td>
+  </tr><tr><td>Zoom-out</td><td></td><td> <strong>-</strong></td>
+
+</tr></tbody></table>
+<h2>vereisten</h2>
+TTB (<em>teletekst-browser</em>) is geschreven in <a href="http://www.python.org/">Python 2.2+</a>, en maakt gebruikt van de <a href="http://pygtk.org/">PyGtk</a> (bij SUSE is <tt>pygtk</tt> een deel van het <tt>gnome-python</tt> pakket).
+<p>Daarnaast is het Python-Dev pakket vereist (voor de installatie); dat pakket wordt verschillend benoemd bij diverse distributies:
+<ul>
+   <li><tt>python2.x-setuptools</tt> (2.x = 2.3/2.4/...)  [Debian, Ubuntu,...]
+   <li><tt>python-dev</tt>  [Debian/Etch]
+   <li><tt>python-devel</tt> [Novell/Suse]
+   <li><tt>python2-devel</tt> [RedHat]
+   <li><tt>libpython2.4-devel</tt> [Mandriva] (version may be different)
+  </ul>
+
+<h2>download/installatie</h2>
+<p>ttb is beschikbaar onder de voorwaarden van de <a href="http://www.ososs.nl/attachment.db?3792">GNU General Public License</a>.
+<p>De oude versie is nog beschikbaar, mocht de nieuwe niet goed functioneren.
+<h3>Instructies</h3>
+<ul>
+  <li>Download <a href="http://www.djcbsoftware.nl/code/ttb/ttb-0.9.4.tar.gz" >ttb-0.9.4.tar.gz</a>
+  <li>Vanaf de commandline:
+  <pre><tt>
+      $ tar xvfz ttb-0.9.4.tar.gz
+      $ cd ttb-0.9.4/
+  </tt></pre>
+  En nu als rootgebruiker (Unbuntu-gebruikers en anderen kunnen ook '<tt>sudo</tt>' gebruiken):
+  <pre><tt>
+      # python ./setup.py -v install
+  </tt></pre>
+  
+  <li>Als alles goed is gegaan staat ttb nu in het "startmenu" van GNOME/KDE.
+  </ul>
+<h3>Oude instructies (versie 0.9.1 en ouder)</h3>
+<p>Het bestaat uit slechts een enkel bestand.
+</p><ul>
+  <li>Download het <a href="http://www.djcbsoftware.nl/code/ttb/ttb">hier</a> (rechtsklik, '<em>Save link as ...</em>') 
+  </li><li>Zet de permissies goed: <tt>chmod +x ttb</tt>
+  </li><li>Zet het in een directory in je pad, bijv. <tt>/usr/local/bin</tt> of <tt>~/bin</tt>
+  </li><li>Start nu het command <tt>ttb</tt>
+</li></ul>
+<hr>
+<!-- hhmts start -->Last modified: Sun Nov 27 21:49:36 EET 2005 <!-- hhmts end -->
+</body></html>
