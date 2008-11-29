@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2008-11-29 12:57:30 (djcb)>
+# Time-stamp: <2008-11-29 18:49:46 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -850,14 +850,21 @@ def main (argv=None):
     try:    
         if argv == None:
             argv = sys.argv
-
-        page = [100,1]
+        
+        mypage = 100 
+        mysubpage = 1
 
         if (argv != None):
-            if len(argv) == 2:
-                page = [int(argv[1]),1]
-            if len(argv) > 2:
-                page = [int(argv[1]),int(argv[2])]
+            if len(argv) > 1 and argv[1].isdigit():
+                mypage = int(argv[1])
+                if mypage < 100 or mypage > 999:
+                    mypage = 100
+            if len(argv) > 2 and argv[2].isdigit():
+                mysubpage = int(argv[2])
+                if mysubpage < 1:
+                    mysubpage = 1
+                 
+        page = [mypage, mysubpage]
 
         glade = get_data_file (ttb_glade_data)
         icon  = get_data_file (ttb_icon_data)
@@ -866,11 +873,7 @@ def main (argv=None):
 
     except KeyboardInterrupt:
 	return 0 
-
-#    except:
-#        print "Fout:" , sys.exc_info()[0]
-#        return 1
-     
+    
     return 0
 
 # ttb: arise!
