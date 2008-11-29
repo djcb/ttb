@@ -3,17 +3,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
 <title>ttb homepage</title></head>
 
-<body><img src="ttb.png" align="right">
+<body><img src="ttb-0.9.5.png" align="right">
 <h1>ttb teletekst browser</h1>
 <tt>ttb</tt> is een programma om Teletekstpagina's te bekijken via internet; <a href="http://www.omroep.nl/">www.omroep.nl</a> biedt al iets dergelijks aan, maar de programma's zijn alleen bruikbaar voor <em>Windows</em> en <em>MacOS</em>. ttb is geschreven voor Unix/Linux, maar zou het ook op andere platforms moeten doen.
-<p>ttb is geschreven door <strong>Dirk-Jan Binnema</strong> (djcb), met hulp van anderen. <a href="mailto:djcb@djcbsoftware.nl?subject=ttb">mail mij</a>, of <a href="http://www.djcbsoftware.nl/ChangeLog">lees mijn blog</a>, of mijn <a href="http://www.advogato.org/person/djcb">advogato-blog</a>.
-Ik sta open voor suggesties en bugrapports; vermeld graag zo veel
-mogelijke relevante details zoals versies van Python, PyGTK,
-distributie enzovoort.
-</p><p><tt>ttb</tt> is beschikbaar volgens de voorwaarden van de <a href="http://www.gnu.org/licenses/gpl.txt">GPLv2 of hoger</a>.
+<p>ttb is geschreven door <strong>Dirk-Jan Binnema</strong> (djcb), met hulp van anderen. <a href="mailto:djcb@djcbsoftware.nl?subject=ttb">mail mij</a>, of <a href="http://www.djcbsoftware.nl/ChangeLog">lees mijn blog</a>, of mijn <a href="http://www.advogato.org/person/djcb">advogato-blog</a> (Engelstalig).
+<p>Ik sta open voor suggesties en bugreports; vermeld graag zo veel
+mogelijke relevante details zoals versies van Python, PyGTK, distributie enzovoort.
+</p><p><tt>ttb</tt> is beschikbaar volgens de voorwaarden van de <a href="http://www.gnu.org/licenses/gpl.txt">GPLv3 of hoger</a>.
+<p>NB: voor veel gebruikers is de eenvoudigste manier om <tt>ttb</tt> te krijgen via hun distributie - bijv. Ubuntu en SUSE hebben ttb-paketten beschikbaar.
 </p><h2>nieuws</h2>
 <ul>
-  <li>[27/11/2005]: <strong>Versie 0.9.4</strong> is nu beschikbaar; wederom geen grote wijzigingen, maar de installieprocedure is verder verbeterd; dat wil zeggen dat er een duidelijker foutmelding volgt in het geval er iets niet goed ge&iuml;nstalleerd is. In de meeste gevallen waar het fout gaat, blijkt de oorzaak het ontbreken van <tt>python-dev</tt> te zijn In heel veel gevallen werkt alles feilloos, na installatie daarvan. Op verschillende distributies heeft het pakket een verschillende naam, bijvoorbeeld:
+  <li>[29/11/2008]: <strong>Versie 0.9.5</strong> is beschikbaar, drie jaar en twee dagen sinds de vorige versie. In die drie jaar heb ik heel veel e-mail ontvangen over ttb, soms met verzoeken, soms een simpel 'bedankt' - nog steeds bijna wekelijks. En ik heb <em>geen enkel</em> bugreport ontvangen!
+  <p>Versie 0.9.5 brengt niet veel nieuws; maar er is nu (op veler verzoek) een 'minimaliseer'-knop voor het TTB-venster; verder heb ik een gebruikershulpdialoog toegevoegd (de knop met het reddingsboei-pictogram), en wat minieme cosmetische verbeteringen. <a href="http://www.djcbsoftware.nl/code/ttb/ttb-0.9.5.tar.gz" >download ttb 0.9.5</a> en zie de <a href="#installatie" >installatie-instructies</a>.
+<p>Voor software-ontwikkelaars in wellicht ook de <a href="http://gitorious.org/projects/ttb" >git-repository</a> interessant; deze bevat de laatste code voor TTB, en patches kunnen het best op basis daarvan geschreven worden.
+    <li>[27/11/2005]: <strong>Versie 0.9.4</strong> is nu beschikbaar; wederom geen grote wijzigingen, maar de installieprocedure is verder verbeterd; dat wil zeggen dat er een duidelijker foutmelding volgt in het geval er iets niet goed ge&iuml;nstalleerd is. In de meeste gevallen waar het fout gaat, blijkt de oorzaak het ontbreken van <tt>python-dev</tt> te zijn In heel veel gevallen werkt alles feilloos, na installatie daarvan. Op verschillende distributies heeft het pakket een verschillende naam, bijvoorbeeld:
   <ul>
    <li><tt>python2.x-setuptools</tt> (2.x = 2.3/2.4/...)  [Debian, Ubuntu,...]
    <li><tt>python-dev</tt>  [Debian/Etch]
@@ -92,32 +95,30 @@ TTB (<em>teletekst-browser</em>) is geschreven in <a href="http://www.python.org
    <li><tt>libpython2.4-devel</tt> [Mandriva] (version may be different)
   </ul>
 
-<h2>download/installatie</h2>
-<p>ttb is beschikbaar onder de voorwaarden van de <a href="http://www.ososs.nl/attachment.db?3792">GNU General Public License</a>.
-<p>De oude versie is nog beschikbaar, mocht de nieuwe niet goed functioneren.
-<h3>Instructies</h3>
-<ul>
-  <li>Download <a href="http://www.djcbsoftware.nl/code/ttb/ttb-0.9.4.tar.gz" >ttb-0.9.4.tar.gz</a>
+<h2><a name="installatie">download/installatie</a></h2>
+  Hier volgen enige instructies om <tt>ttb</tt> handmatig te installeren - maar merk op dat veel Linux-distributies al ttb-pakketten aanbieden.
+  <ul>
+  <li>Download <a href="http://www.djcbsoftware.nl/code/ttb/ttb-0.9.5.tar.gz" >ttb-0.9.5.tar.gz</a>
   <li>Vanaf de commandline:
   <pre><tt>
-      $ tar xvfz ttb-0.9.4.tar.gz
-      $ cd ttb-0.9.4/
+      $ tar xvfz ttb-0.9.5.tar.gz
+      $ cd ttb-0.9.5/
   </tt></pre>
-  En nu als rootgebruiker (Unbuntu-gebruikers en anderen kunnen ook '<tt>sudo</tt>' gebruiken):
+  En nu als rootgebruiker (of '<tt>sudo</tt>'):
   <pre><tt>
       # python ./setup.py -v install
   </tt></pre>
   
-  <li>Als alles goed is gegaan staat ttb nu in het "startmenu" van GNOME/KDE.
+  <li>Als alles goed is gegaan staat ttb nu in het "startmenu" van GNOME/KDE/...
   </ul>
-<h3>Oude instructies (versie 0.9.1 en ouder)</h3>
-<p>Het bestaat uit slechts een enkel bestand.
-</p><ul>
-  <li>Download het <a href="http://www.djcbsoftware.nl/code/ttb/ttb">hier</a> (rechtsklik, '<em>Save link as ...</em>') 
-  </li><li>Zet de permissies goed: <tt>chmod +x ttb</tt>
-  </li><li>Zet het in een directory in je pad, bijv. <tt>/usr/local/bin</tt> of <tt>~/bin</tt>
-  </li><li>Start nu het command <tt>ttb</tt>
-</li></ul>
 <hr>
-<!-- hhmts start -->Last modified: Sun Nov 27 21:49:36 EET 2005 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Sat Nov 29 13:51:00 EET 2008 <!-- hhmts end -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-578531-1");
+pageTracker._trackPageview();
+</script>
 </body></html>
