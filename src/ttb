@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2008-11-28 16:27:04 (djcb)>
+# Time-stamp: <2008-11-29 12:57:30 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -24,7 +24,7 @@
 #
 # -------------------------------------------------------------------------
 #
-# The current version of GPL is at http://www.gnu.org/licenses/gpl.txt
+# The current version of GPL can be found at http://www.gnu.org/licenses/gpl.txt
 #
 # -------------------------------------------------------------------------
 #
@@ -34,7 +34,6 @@
 # Please visit http://www.djcbsoftware.nl/code/ttb for more information.
 #
 # -------------------------------------------------------------------------
-
 
 # import some stuff
 import sys,httplib,urllib2,os,tempfile,time,random
@@ -212,7 +211,7 @@ class GUI:
         def normalize (self, cursor):
             return [int(cursor[0] / self.factor()[0]),
                     int(cursor[1] / self.factor()[1])]
-
+        
                    
     def __init__(self, glade, icon, model):
 
@@ -234,14 +233,13 @@ class GUI:
 
        # the main window
        self.main_window        = self.widgets.get_widget('window_main')
-
+       
        # the help dialog
        helpwidgets = gtk.glade.XML (glade,'dialog_help')
-       helpwidgets.signal_autoconnect (self)
-
+       helpwidgets.signal_autoconnect(self)
        self.help_dialog  = helpwidgets.get_widget('dialog_help')
        self.help_dialog.set_transient_for (self.main_window)
-       
+
        # the about dialog
        self.about_dialog       = None
 
@@ -378,7 +376,8 @@ class GUI:
         self.goto_page(self.model.get_page(),1,0) # don't add to hist
         self.look_busy(0)
         return            
-                
+    
+               
     def on_button_press_event (self,button,event):
 
         sub  = event.button == 3
@@ -467,6 +466,14 @@ class GUI:
             self.help_dialog.show ()
             return 1
 
+    def on_dialog_help_close(self, response, ptr):
+ 
+           self.help_dialog.hide()
+            
+    def on_dialog_help_delete_event (self, event, ptr):
+
+            self.help_dialog.hide()
+            return 1
                
     def on_image_button_press_event (self,*args):
 
@@ -475,9 +482,6 @@ class GUI:
                 self.size.normalize(self.image_holder.get_pointer())) 
             if page != None:
                 self.goto_page(page)
-
-    
-
        
 
     def on_image_motion_notify_event (self,*args):
@@ -560,6 +564,10 @@ class GUI:
         self.model.cleanup()
         gtk.main_quit()
             
+
+    def fill_help_text_view (self, textview):
+        buf = textview.get_buffer
+
 
 #
 # MetaInfo parses the webpage corresponding to the teletekst page,
@@ -859,9 +867,9 @@ def main (argv=None):
     except KeyboardInterrupt:
 	return 0 
 
-    except:
-        print "Fout:" , sys.exc_info()[0]
-        return 1
+#    except:
+#        print "Fout:" , sys.exc_info()[0]
+#        return 1
      
     return 0
 
