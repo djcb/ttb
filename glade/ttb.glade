@@ -1,190 +1,287 @@
-<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
-<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--*- mode: xml -*-->
 <glade-interface>
-    <widget class="GtkWindow" id="window_main">
-        <property name="allow_grow">False</property>
-        <property name="destroy_with_parent">True</property>
-        <property name="icon_name" context="yes" translatable="yes"></property>
-        <property name="resizable">False</property>
-        <property name="skip_pager_hint">True</property>
-        <property name="title" context="yes" translatable="yes">Teletekst Browser</property>
-        <property name="tooltip">TTB Teletekst Browser</property>
-        <property name="type_hint">dialog</property>
+  <widget class="GtkWindow" id="window_main">
+    <property name="visible">True</property>
+    <property name="title" translatable="yes" context="yes">TTB Teletekst Browser</property>
+    <property name="resizable">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="icon_name">ttb</property>
+    <property name="skip_pager_hint">True</property>
+    <signal name="key_press_event" handler="on_window_main_key_press_event"/>
+    <child>
+      <widget class="GtkVBox" id="vbox_main">
         <property name="visible">True</property>
-        <signal handler="on_window_main_key_press_event" name="key_press_event" after="False"/>
         <child>
-            <widget class="GtkVBox" id="vbox_main">
+          <widget class="GtkScrolledWindow" id="scrolledwindow2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+            <property name="vscrollbar_policy">GTK_POLICY_NEVER</property>
+            <property name="shadow_type">GTK_SHADOW_OUT</property>
+            <child>
+              <widget class="GtkViewport" id="image_holder">
+                <property name="visible">True</property>
+                <property name="border_width">2</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </widget>
+            </child>
+          </widget>
+        </child>
+        <child>
+          <widget class="GtkHBox" id="hbox7">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkHBox" id="hbox10">
+                <property name="width_request">120</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkScrolledWindow" id="scrolledwindow2">
-                        <property name="hscrollbar_policy">never</property>
-                        <property name="shadow_type">out</property>
+                  <widget class="GtkButton" id="button_prev">
+                    <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup">Klik voor vorige pagina, rechtsklik voor vorige sub-pagina</property>
+                    <property name="tooltip_text">Klik voor vorige pagina, rechtsklik voor vorige sub-pagina</property>
+                    <property name="tooltip" context="yes">Klik voor vorige pagina, rechtsklik voor vorige sub-pagina</property>
+                    <property name="response_id">0</property>
+                    <signal name="button_press_event" handler="on_button_press_event"/>
+                    <child>
+                      <widget class="GtkImage" id="GtkImage1">
                         <property name="visible">True</property>
-                        <property name="vscrollbar_policy">never</property>
-                        <child>
-                            <widget class="GtkViewport" id="image_holder">
-                                <property name="border_width">2</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
-                            </widget>
-                        </child>
-                    </widget>
+                        <property name="stock">gtk-go-back</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                  </packing>
                 </child>
                 <child>
-                    <widget class="GtkHBox" id="hbox7">
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkHBox" id="hbox10">
-                                <property name="visible">True</property>
-                                <property name="width_request">120</property>
-                                <child>
-                                    <widget class="GtkButton" id="button_prev">
-                                        <property name="tooltip">Klik voor vorige pagina, rechtsklik voor vorige sub-pagina</property>
-                                        <property name="visible">True</property>
-                                        <signal handler="on_button_press_event" name="button_press_event" after="False"/>
-                                        <child>
-                                            <widget class="GtkImage" id="GtkImage1">
-                                                <property name="stock" context="yes" translatable="yes">gtk-go-back</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkEntry" id="entry_page">
-                                        <property name="is_focus">True</property>
-                                        <property name="max_length">3</property>
-                                        <property name="text" context="yes" translatable="yes">999</property>
-                                        <property name="visible">True</property>
-                                        <property name="width_chars">3</property>
-                                        <signal handler="on_entry_key_press_event" name="key_press_event" after="False"/>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkEntry" id="entry_subpage">
-                                        <property name="is_focus">True</property>
-                                        <property name="max_length">2</property>
-                                        <property name="text" context="yes" translatable="yes">99</property>
-                                        <property name="visible">True</property>
-                                        <property name="width_chars">2</property>
-                                        <signal handler="on_entry_key_press_event" name="key_press_event" after="False"/>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkButton" id="button_next">
-                                        <property name="tooltip">Klik voor volgende pagina, rechtsklik voor volgende sub-pagina</property>
-                                        <property name="visible">True</property>
-                                        <signal handler="on_button_press_event" name="button_press_event" after="False"/>
-                                        <child>
-                                            <widget class="GtkImage" id="GtkImage2">
-                                                <property name="stock" context="yes" translatable="yes">gtk-go-forward</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">3</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkLabel" id="label10">
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="padding">6</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkHBox" id="hbox11">
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkButton" id="button_refresh">
-                                        <property name="is_focus">True</property>
-                                        <property name="visible">True</property>
-                                        <signal handler="on_button_refresh_clicked" name="clicked" after="False"/>
-                                        <child>
-                                            <widget class="GtkImage" id="GtkImage3">
-                                                <property name="stock" context="yes" translatable="yes">gtk-refresh</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkButton" id="button_about">
-                                        <property name="is_focus">True</property>
-                                        <property name="visible">True</property>
-                                        <signal handler="on_button_about_clicked" name="clicked" after="False"/>
-                                        <child>
-                                            <widget class="GtkImage" id="GtkImage4">
-                                                <property name="stock" context="yes" translatable="yes">gtk-dialog-info</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="pack_type">end</property>
-                                        <property name="position">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkButton" id="button_exit">
-                                        <property name="is_focus">True</property>
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <widget class="GtkImage" id="GtkImage5">
-                                                <property name="stock" context="yes" translatable="yes">gtk-quit</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="pack_type">end</property>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                            <packing>
-                                <property name="position">2</property>
-                            </packing>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="position">1</property>
-                    </packing>
+                  <widget class="GtkEntry" id="entry_page">
+                    <property name="visible">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text">Pagina</property>
+                    <property name="max_length">3</property>
+                    <property name="width_chars">3</property>
+                    <property name="text" translatable="yes" context="yes">999</property>
+                    <signal name="key_press_event" handler="on_entry_key_press_event"/>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
-            </widget>
+                <child>
+                  <widget class="GtkEntry" id="entry_subpage">
+                    <property name="visible">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="tooltip_text">Subpagina</property>
+                    <property name="max_length">2</property>
+                    <property name="width_chars">2</property>
+                    <property name="text" translatable="yes" context="yes">99</property>
+                    <signal name="key_press_event" handler="on_entry_key_press_event"/>
+                  </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_next">
+                    <property name="visible">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_markup">Klik voor volgende pagina, rechtsklik voor volgende sub-pagina</property>
+                    <property name="tooltip_text">Klik voor volgende pagina, rechtsklik voor volgende sub-pagina</property>
+                    <property name="tooltip" context="yes">Klik voor volgende pagina, rechtsklik voor volgende sub-pagina</property>
+                    <property name="response_id">0</property>
+                    <signal name="button_press_event" handler="on_button_press_event"/>
+                    <child>
+                      <widget class="GtkImage" id="GtkImage2">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-go-forward</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label10">
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">6</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkHBox" id="hbox11">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkButton" id="button_refresh">
+                    <property name="visible">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text">Ververs de huidige pagina</property>
+                    <property name="response_id">0</property>
+                    <signal name="clicked" handler="on_button_refresh_clicked"/>
+                    <child>
+                      <widget class="GtkImage" id="GtkImage3">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-refresh</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_help">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text">Gebruiksinformatie...</property>
+                    <property name="response_id">0</property>
+                    <signal name="clicked" handler="on_button_help_clicked"/>
+                    <child>
+                      <widget class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-help</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">GTK_PACK_END</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_about">
+                    <property name="visible">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="tooltip_text">Over TTB...</property>
+                    <property name="response_id">0</property>
+                    <signal name="clicked" handler="on_button_about_clicked"/>
+                    <child>
+                      <widget class="GtkImage" id="GtkImage4">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-dialog-info</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">GTK_PACK_END</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="button_exit">
+                    <property name="visible">True</property>
+                    <property name="is_focus">True</property>
+                    <property name="has_tooltip">True</property>
+                    <property name="tooltip_text">Afsluiten</property>
+                    <property name="response_id">0</property>
+                    <child>
+                      <widget class="GtkImage" id="GtkImage5">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-quit</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack_type">GTK_PACK_END</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
         </child>
-    </widget>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkDialog" id="dialog_help">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">TTB Help</property>
+    <property name="resizable">False</property>
+    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="icon_name">ttb</property>
+    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="dialog-vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <widget class="GtkTextView" id="dialog_help_text_view">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="cursor_visible">False</property>
+            <property name="accepts_tab">False</property>
+            <property name="text" translatable="yes">&lt;b&gt;TTB Help&lt;b&gt;
+
+</property>
+          </widget>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="dialog-action_area1">
+            <property name="visible">True</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <widget class="GtkButton" id="help_dialog_button_close">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-close</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
 </glade-interface>

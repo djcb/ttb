@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2005-10-01 16:59:46 (djcb)>
+# Time-stamp: <2008-11-28 16:27:04 (djcb)>
 #
 # Browser for Teletekst pages
 #
 # -------------------------------------------------------------------------
 #
-# Copyright 2004,2005 Dirk-Jan C. Binnema
+# Copyright 2004-2008 Dirk-Jan C. Binnema
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -36,7 +36,6 @@
 # -------------------------------------------------------------------------
 
 
-
 # import some stuff
 import sys,httplib,urllib2,os,tempfile,time,random
 import pygtk
@@ -44,11 +43,14 @@ pygtk.require("2.0")
 import gtk, gtk.glade
 from HTMLParser import HTMLParser
 
-ttb_version = '0.9.4'
+ttb_version = '0.9.5'
 ttb_user_agent = "TTB/" + ttb_version
 ttb_title = "TTB Teletekst Browser"
 ttb_cache_time = 300
 ttb_max_history = 50
+
+ttb_glade_data = 'ttb/ttb.glade'
+ttb_icon_data  = 'pixmaps/ttb.png'
 
 ttb_debug = 0
 
@@ -233,8 +235,19 @@ class GUI:
        # the main window
        self.main_window        = self.widgets.get_widget('window_main')
 
+       # the help dialog
+       helpwidgets = gtk.glade.XML (glade,'dialog_help')
+       helpwidgets.signal_autoconnect (self)
+
+       self.help_dialog  = helpwidgets.get_widget('dialog_help')
+       self.help_dialog.set_transient_for (self.main_window)
+       
+       # the about dialog
+       self.about_dialog       = None
+
        try:
            self.main_window.set_icon_from_file (icon)
+           self.help_dialog.set_icon_from_file (icon)
        except:
            print "icon not supported with this version of pygtk"
 
@@ -251,16 +264,21 @@ class GUI:
        self.widgets.get_widget('button_exit').connect('clicked',self.on_exit)
        
        # can receive window events
-       self.image_holder.add_events(gtk.gdk.POINTER_MOTION_MASK|gtk.gdk.LEAVE_NOTIFY_MASK)
+       self.image_holder.add_events(gtk.gdk.POINTER_MOTION_MASK|
+                                    gtk.gdk.LEAVE_NOTIFY_MASK)
        
-       self.image_holder.connect('button_press_event', self.on_image_button_press_event)
-       self.image_holder.connect('motion_notify_event', self.on_image_motion_notify_event)
-       self.image_holder.connect('leave_notify_event', self.on_image_leave_notify_event)
+       self.image_holder.connect('button_press_event', 
+                                 self.on_image_button_press_event)
+       self.image_holder.connect('motion_notify_event', 
+                                 self.on_image_motion_notify_event)
+       self.image_holder.connect('leave_notify_event', 
+                                 self.on_image_leave_notify_event)
 
        self.image_holder.show()
        
        # setup d&d
-       self.image_holder.drag_source_set (gtk.gdk.BUTTON1_MASK,[("text/uri-list",0,1)],
+       self.image_holder.drag_source_set (gtk.gdk.BUTTON1_MASK,
+                                          [("text/uri-list",0,1)],
                                           gtk.gdk.ACTION_COPY)
        self.image_holder.connect('drag_data_get',self.on_drag_data_get)
        
@@ -331,7 +349,9 @@ class GUI:
             if currpage != None:
                 self.page_num_entry.set_text(str(currpage[0]))
                 self.sub_page_num_entry.set_text(str(currpage[1]))        
-                self.main_window.set_title ('%s [%d/%d]' % (ttb_title, currpage[0], currpage[1])) 
+                self.main_window.set_title ('%s [%d/%d]' % (ttb_title, 
+                                                            currpage[0], 
+                                                            currpage[1])) 
 
         self.image_holder.grab_focus()
         
@@ -409,17 +429,44 @@ class GUI:
                        
     # show the about box
     def on_button_about_clicked (self,*args):
-        
-        txt = "TTB Teletekst Browser, version " + ttb_version
-        txt = txt + "\nCopyright 2004, 2005 Dirk-Jan C. Binnema\n" \
-              "http://www.djcbsoftware.nl/code/ttb\n\n" \
-              "This program is Free Software under the terms of the GPL"
+                   
+        if self.about_dialog:
+            self.about_dialog.present ()
+            return 1
+
+        dialog = gtk.AboutDialog()
+        dialog.set_name (ttb_title)
+        dialog.set_version (ttb_version)
+        dialog.set_copyright ("Copyright 2004-2008 Dirk-Jan C. Binnema\n" + 
+                              "Released under the terms of " + 
+                              "the GNU General Public License (GPL), v3 or later");
+        dialog.set_comments ("A Teletekst Browser for Unix/Linux")
+        dialog.set_website ("http://www.djcbsoftware.nl/code/ttb")
+        dialog.set_logo_icon_name ('ttb')
+        dialog.set_transient_for (self.main_window)
+ 
+        # callbacks for destroying the dialog
+        def on_about_dialog_close(dialog, response, editor):
+            self.about_dialog = None
+            dialog.destroy()
             
-        dialog = gtk.MessageDialog(self.main_window,
-                                    gtk.DIALOG_MODAL |gtk.DIALOG_DESTROY_WITH_PARENT,
-                                    gtk.MESSAGE_INFO,
-                                    0, txt)
-        dialog.run()
+        def on_about_dialog_delete_event (dialog, event, editor):
+            self.about_dialog = None
+            return 1
+                    
+        dialog.connect("response", on_about_dialog_close, self)
+        dialog.connect("delete-event", on_about_dialog_delete_event, self)
+        
+        self.about_dialog = dialog
+        self.about_dialog.show()
+
+
+    # show the help window
+    def on_button_help_clicked (self,*args):
+
+            self.help_dialog.show ()
+            return 1
+
                
     def on_image_button_press_event (self,*args):
 
@@ -428,7 +475,11 @@ class GUI:
                 self.size.normalize(self.image_holder.get_pointer())) 
             if page != None:
                 self.goto_page(page)
+
+    
+
        
+
     def on_image_motion_notify_event (self,*args):
 
         if self.model.metainfo != None:
@@ -442,7 +493,8 @@ class GUI:
       
     def on_image_leave_notify_event (self,*args):
         # restore the old cursor
-        self.image_holder.get_parent_window().set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        parentwin = self.image_holder.get_parent_window()
+        parentwin.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
     # keybindings...
     def on_window_main_key_press_event(self,widget,event,data=None):
@@ -722,7 +774,8 @@ class Network:
             # 'replace' or htmlparser won't like our html
             html = 'http://teletekst.nos.nl/gif/' + pagename + '.html'
             try:
-                data = self.http_get(html).replace('<script','<!--').replace('</script>','-->')
+                html = self.http_get(html)
+                data = html.replace('<script','<!--').replace('</script>','-->')
             except:
                 raise "could not retrieve " + html
                 
@@ -784,11 +837,9 @@ def get_data_file (name):
     raise "Could not find " + name
 
 
-
 def main (argv=None):
 
-    try:
-    
+    try:    
         if argv == None:
             argv = sys.argv
 
@@ -800,8 +851,8 @@ def main (argv=None):
             if len(argv) > 2:
                 page = [int(argv[1]),int(argv[2])]
 
-        glade = get_data_file ('ttb/ttb.glade')
-        icon  = get_data_file ('pixmaps/ttb.png')
+        glade = get_data_file (ttb_glade_data)
+        icon  = get_data_file (ttb_icon_data)
          
         TTB(glade, icon, page)
 
