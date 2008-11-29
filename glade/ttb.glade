@@ -249,11 +249,11 @@
             <property name="label" translatable="yes" context="yes">&lt;u&gt;&lt;b&gt;TTB Hulp&lt;/b&gt;&lt;/u&gt;
 
 &lt;b&gt;Naar de vorige/volgende pagina&lt;/b&gt; (van 100 naar 101)
-  - met de &lt;i&gt;muis&lt;/i&gt;: linksklik of de knop met de pijl naar links/rechts
+  - met de &lt;i&gt;muis&lt;/i&gt;: linksklik(*) op pijl naar links/rechts
   - met het &lt;i&gt;toetsenbord&lt;/i&gt;: PageUp/PageDown
 &lt;b&gt;Naar de vorige/volgende subpagina&lt;/b&gt; (van 819/1 naar 819/2)
-  - met de &lt;i&gt;muis&lt;/i&gt;: rechtsklik of de knop met de pijl naar links/rechts
-  - met het &lt;i&gt;toetsenbord&lt;/i&gt;: PageUp / PageDown
+  - met de &lt;i&gt;muis&lt;/i&gt;: rechtsklik op pijl naar links/rechts
+  - met het &lt;i&gt;toetsenbord&lt;/i&gt;: Shift-PageUp / Shift-PageDown
 &lt;b&gt;Naar de vorige/volgende bezochte pagina&lt;/b&gt;
   - met het &lt;i&gt;toetsenbord&lt;/i&gt;: Alt-PageUp / Alt-PageDown
 &lt;b&gt;Vergroten/verkleinen&lt;/b&gt;
@@ -261,7 +261,7 @@
 &lt;b&gt;Bewaren van een pagina&lt;/b&gt;
   - sleep de pagina naar het bureaublad
 &lt;b&gt;Verder&lt;/b&gt;
-  - ververs pagina ('r'), afsluiten ('q')
+  - ververs pagina ('r'), afsluiten ('q'/'x'), pagina 100: Home
 </property>
             <property name="use_markup">True</property>
             <property name="wrap">True</property>
