@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2008-11-29 18:49:46 (djcb)>
+# Time-stamp: <2009-01-07 17:02:32 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -41,6 +41,8 @@ import pygtk
 pygtk.require("2.0")
 import gtk, gtk.glade
 from HTMLParser import HTMLParser
+from optparse import OptionParser
+import re
 
 ttb_version = '0.9.5'
 ttb_user_agent = "TTB/" + ttb_version
@@ -752,6 +754,7 @@ class Network:
     # retrieve the page
     def retrieve_page (self, page, nocache=0):
 
+        #pagename = str(page[0]) + "_" +  ("0"+str(page[1]))[-2:]
         pagename = str(page[0]) + "-" +  ("0"+str(page[1]))[-2:]
 
         localimg  = self.tempdir + "/" + pagename + '.gif'
@@ -766,8 +769,9 @@ class Network:
         if retrieve_from_network:                        
 
             # gif image to retrieve
+            #gif = 'http://www.rtl.nl/videotext/data/rtl4/gif/' + pagename + '.gif'
             gif = 'http://teletekst.nos.nl/gif/images/' + pagename + '.gif'
-            
+    
             try:
                 data = self.http_get (gif)
             except:
@@ -785,8 +789,8 @@ class Network:
                 html = self.http_get(html)
                 data = html.replace('<script','<!--').replace('</script>','-->')
             except:
-                raise "could not retrieve " + html
-                
+               raise "could not retrieve " + html
+               
             htmlfile = open (localhtml,'w')
             htmlfile.write (data)
             htmlfile.close()
@@ -820,12 +824,11 @@ class Network:
         return localerr
 
 
-# find our library dirs, inspired by Straw
 def get_data_dir ():
 
     if os.environ.has_key("TTB_DATA"):
         return os.environ["TTB_DATA"]
-
+    
     h,t = os.path.split(os.path.split(os.path.abspath(sys.argv[0]))[0])
     if t == 'bin':
         fp = os.path.join (h, 'share')
@@ -833,7 +836,6 @@ def get_data_dir ():
             return fp
 
     raise "Could not find data directory"
-
 
 def get_data_file (name):
 
@@ -845,34 +847,55 @@ def get_data_file (name):
     raise "Could not find " + name
 
 
+
+def parse_page (page):
+    
+    rx = re.compile ('(\d{3})(?:/(\d{1,2}))?')
+
+    m = rx.match(page)
+    if (not m):
+        raise "not a valid page number: " + page
+        
+    p1 = int(m.groups()[0])
+    p2 = 1
+    if m.groups()[1]:
+        p2 = int(m.groups()[1])
+            
+    return (p1, p2)
+        
+
+
 def main (argv=None):
 
-    try:    
-        if argv == None:
-            argv = sys.argv
-        
-        mypage = 100 
-        mysubpage = 1
+    parser = OptionParser(usage="%prog [OPTIONS]", version="%prog " + ttb_version,
+                          description=ttb_title + 
+                          "(c) 2005-2008 Dirk-Jan C. Binnema; " +
+                          "see: http://www.djcbsoftware.nl/code/ttb")
+  
+    parser.add_option ("-s", "--source",
+                       action="store", type="string", dest="source",
+                       help="use SOURCE as source, valid options are 'teletekst'" +
+                            ", 'rtl4', 'rtl5', 'rtl6', 'rtl7'; default is 'teletekst'",
+                       metavar="SOURCE")
+    parser.add_option ("-p", "--page",
+                       action="store", type="string", dest="page",
+                       help="start with page PAGE, e.g. '800' or '316/2'; default is '100'",
+                       metavar="PAGE")
 
-        if (argv != None):
-            if len(argv) > 1 and argv[1].isdigit():
-                mypage = int(argv[1])
-                if mypage < 100 or mypage > 999:
-                    mypage = 100
-            if len(argv) > 2 and argv[2].isdigit():
-                mysubpage = int(argv[2])
-                if mysubpage < 1:
-                    mysubpage = 1
-                 
-        page = [mypage, mysubpage]
+    (options,args) = parser.parse_args()
 
-        glade = get_data_file (ttb_glade_data)
-        icon  = get_data_file (ttb_icon_data)
+    if (options.page):
+        (mypage, mysubpage) = parse_page (options.page)
+    else:
+        (mypage, mysubpage) = 100, 1
+             
+    glade = get_data_file (ttb_glade_data)
+    icon  = get_data_file (ttb_icon_data)
          
-        TTB(glade, icon, page)
-
+    try:
+        TTB(glade, icon, (mypage,mysubpage))
     except KeyboardInterrupt:
-	return 0 
+        return 0
     
     return 0
 
