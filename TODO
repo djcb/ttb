@@ -1,0 +1,15 @@
+-*-mode:org-*-
+
+Things to do for version 0.9.6:
+* TODO don't use string exceptions
+* TODO implement RTL teletekst browsing:
+  - [] option parsing
+  - [] abstract page retrieval
+  - [] make gif area work
+  - [] add option (combobox) to UI
+  - [] add icons
+* TODO handle service breakage sanely
+* TODO maemo version
+
+
+    
