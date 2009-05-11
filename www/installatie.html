@@ -34,18 +34,20 @@
 </div>
 
 <div id="body"><div class="padding">
+
+<!--
 <div id="sidebar"><div class="padding">
 
-  <h3>Nieuws</h3>
+  <h3>Ontwikkeling</h3>
 
-  <p><strong>Versie 1.0</strong> is nu beschikbaar!</p>
+  <p>Binnenkort komt versie 1.0 uit.</p>
   
-  <p>Spoedig beginnen de werkzaamheden voor ttb-2.x</p>
+  <p>Daarna beginnen de werkzaamheden voor ttb-2.x</p>
 
   <h3>Download</h3>
   <ul>
-  <li><a href="http://www.djcbsoftware.nl/code/ttb/ttb-1.0.tar.gz">versie
-  1.0</a><br/>
+  <li><a href="http://www.djcbsoftware.nl/code/ttb/ttb-0.9.5.tar.gz">versie
+  0.9.5</a><br/>
     </ul>
     
  <h3>Code</h3>
@@ -54,35 +56,36 @@
   </ul>
 
 </div></div>
+-->
 
 <div id="content">
   
-  <h3>Wat is TTB?</h3>
+  <h3>Installatie</h3>
 
-  <p>TTB is een teletekst browser voor
-  Linux/Unix. Ubuntu/Debian-gebruikers kunnen het pakket eenvoudig installeren
-  (naam: '<tt>ttb</tt>'). Anderen kunnen het eenvoudig handmatig installeren,
-  zie de <a href="installatie.html" >instructies</a>. </p>
-
-  <p><strong>Nieuws:</strong> versie 1.0 is nu beschikbaar! De eerste versies
-  van <tt>ttb</tt> stammen uit 2004, en nu, mei 2009, zijn we eindelijk bij
-  <strong>1.0</strong>. De nieuwe versie fixt enkele minimieme probleempjes in
-  versie 0.9.5, die eind 2008 uitkwam. We vieren de nieuwe versie met een
-  geheel vernieuwde website; de <a href="index-old.html" >oude pagina</a> is
-  ook nog beschikbaar</p>
-
-  <p>De ontwikkeling gaat nu verder met <tt>ttb 2.x</tt>. Wat die nieuwe
-  versie precies zal bieden is nog onbekend -- suggesties zijn welkom. Voor
-  ontwikkelaars zijn de nieuwe ontwikkelingen te volgen via de <a
-  href="http://gitorious.org/ttb" >GIT-repository</a>.</p>
+  <p>De eenvoudigste manier om <tt>ttb</tt> te installeren is via een
+  kant-en-klaar pakket. Bijvoorbeeld: Debian en Ubuntu kunnen <tt>ttb</tt>
+  gewoon installeren via het installatieprogramma. Voor Ubuntu, zie het <a
+  href="screenshots.html">screenshot</a>.</p>
   
-  <p>TTB is geschreven door <a href="http://www.djcbsoftware.nl" >Dirk-Jan
-  C. Binnema</a> met hulp van anderen, en beschikbaar onder de voorwaarden van
-  de <a href="http://www.gnu.org/licenses/gpl.txt" >GPLv3</a> of hoger. Voor
-  problemen of suggesties kunt u contact opnemen via <a
-  href="mailto:djcb@djcbsoftware.nl" >e-mail</a>. In geval van problemen
-  gelieve de relevante softwareversies te vermelden, en ook eventuele
-  foutmeldingen.</div>
+  <p>Als er <em>geen</em> kant-en-klaar pakket beschikbaar is, kan
+  <tt>ttb</tt> ook redelijk eenvoudig handmatig geïnstalleerd worden, met de
+  volgende stappen:
+ <ul>
+   <li>Download <a href="http://www.djcbsoftware.nl/code/ttb/ttb-0.9.5.tar.gz" >ttb-0.9.5.tar.gz</a>
+   <li>Vanaf de commandline:
+   <pre><tt>
+      $ tar xvfz ttb-0.9.5.tar.gz
+      $ cd ttb-0.9.5/
+  </tt></pre>
+
+  En nu als rootgebruiker (of '<tt>sudo</tt>'):
+  <pre><tt>
+      # python ./setup.py -v install
+  </tt></pre>
+   
+   <li>Als alles goed is gegaan staat ttb nu in het "startmenu" van GNOME/KDE/...; of <tt>ttb</tt> kan gestart worden vanaf de commandline, met het command <tt>ttb</tt> (of zelfs <tt>ttb 101</tt> om direct naar het laatste nieuws te gaan).
+ </ul>
+</div>
 
 </div>
 

@@ -1,6 +1,6 @@
 Summary: TTB Teletekst Browser
 Name: ttb
-Version: 0.9.5
+Version: 1.0
 Release: 
 Group: Misc
 URL: http://www.djcbsoftware.nl/code/ttb
