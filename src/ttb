@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2009-05-11 21:30:39 (djcb)>
+# Time-stamp: <2009-05-11 22:29:46 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -846,54 +846,37 @@ def get_data_file (name):
 
     raise "Could not find " + name
 
-
-
-def parse_page (page):
-    
-    rx = re.compile ('(\d{3})(?:/(\d{1,2}))?')
-
-    m = rx.match(page)
-    if (not m):
-        raise "not a valid page number: " + page
-        
-    p1 = int(m.groups()[0])
-    p2 = 1
-    if m.groups()[1]:
-        p2 = int(m.groups()[1])
-            
-    return (p1, p2)
-        
+      
 
 
 def main (argv=None):
-
-    parser = OptionParser(usage="%prog [OPTIONS]", version="%prog " + ttb_version,
-                          description=ttb_title + 
-                          "(c) 2005-2008 Dirk-Jan C. Binnema; " +
-                          "see: http://www.djcbsoftware.nl/code/ttb")
-  
-    parser.add_option ("-s", "--source",
-                       action="store", type="string", dest="source",
-                       help="use SOURCE as source, valid options are 'teletekst'" +
-                            ", 'rtl4', 'rtl5', 'rtl6', 'rtl7'; default is 'teletekst'",
-                       metavar="SOURCE")
-    parser.add_option ("-p", "--page",
-                       action="store", type="string", dest="page",
-                       help="start with page PAGE, e.g. '800' or '316/2'; default is '100'",
-                       metavar="PAGE")
-
-    (options,args) = parser.parse_args()
-
-    if (options.page):
-        (mypage, mysubpage) = parse_page (options.page)
-    else:
-        (mypage, mysubpage) = 100, 1
-             
-    glade = get_data_file (ttb_glade_data)
-    icon  = get_data_file (ttb_icon_data)
-         
+    
     try:
+        if argv == None:
+            argv = sys.argv
+            
+        mypage    = 100
+        mysubpage = 1
+            
+        if (argv != None):
+            if len(argv) > 1 and argv[1].isdigit():
+                mypage = int(argv[1])
+            
+        if mypage < 100 or mypage > 999:
+            mypage = 100
+            
+        if len(argv) > 2 and argv[2].isdigit():
+            mysubpage = int(argv[2])
+            if mysubpage < 1:
+                mysubpage = 1
+   
+        page = [mypage, mysubpage]
+                         
+        glade = get_data_file (ttb_glade_data)
+        icon  = get_data_file (ttb_icon_data)
+         
         TTB(glade, icon, (mypage,mysubpage))
+    
     except KeyboardInterrupt:
         return 0
     
