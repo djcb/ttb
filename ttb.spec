@@ -1,27 +1,50 @@
+%define name    ttb
+%define version 1.0
+%define release 1
+
 Summary: TTB Teletekst Browser
-Name: ttb
-Version: 1.0
-Release: 
+Name: %{name}
+Version: %{version}
+Release: %{release}
 Group: Misc
+Source0:  %{name}-%{version}.tar.gz
 URL: http://www.djcbsoftware.nl/code/ttb
-Packager: 
 License: GPL
 BuildArch: noarch
+BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 TTB Teletekst Browser is a small browser for the teletekst system
 as used in The Netherlands, and provides a convenient way to stay
 up to date with news, sports, weather, stock exchange and what not
 
+%prep
+%setup -n %{name}-%{version}
+
+%install
+mkdir -p ${RPM_BUILD_ROOT}/usr/bin
+mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
+mkdir -p ${RPM_BUILD_ROOT}/usr/share/pixmaps
+mkdir -p ${RPM_BUILD_ROOT}/usr/share/ttb
+mkdir -p ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}
+cp src/ttb ${RPM_BUILD_ROOT}/usr/bin
+cp glade/ttb.glade ${RPM_BUILD_ROOT}/usr/share/ttb
+cp images/ttb.png ${RPM_BUILD_ROOT}/usr/share/pixmaps
+cp ttb.desktop ${RPM_BUILD_ROOT}/usr/share/applications
+cp [ALMP]* ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}
+
+%clean
+[ "${RPM_BUILD_ROOT}" != "/" ] && %{__rm} -rf ${RPM_BUILD_ROOT}
+cd ..
+rm -rf %{name}-%{version}
+
 %files
 /usr/bin/ttb
 /usr/share/applications/ttb.desktop
 /usr/share/pixmaps/ttb.png
-/usr/share/ttb/ttb.glade
+/usr/share/ttb
+/usr/share/doc/%{name}-%{version}
 
 %post
 chmod 755 /usr/bin/ttb
-
-%postun
-rm -f /usr/share/ttb
 
