@@ -63,32 +63,39 @@
   <h3>Installatie</h3>
 
   <p>De eenvoudigste manier om <tt>ttb</tt> te installeren is via een
-  kant-en-klaar pakket. Bijvoorbeeld: Debian en Ubuntu kunnen <tt>ttb</tt>
-  gewoon installeren via het installatieprogramma. Voor Ubuntu, zie het <a
-  href="screenshots.html">screenshot</a>.</p>
+  kant-en-klaar pakket. Bijvoorbeeld Ubuntu-gebruikers kunnen <tt>ttb</tt>
+  gewoon installeren via het installatieprogramma (zie het <a
+  href="screenshots.html">screenshot</a>); het Ubuntu-pakket werkt ook
+  voor Debian-gebruikers.</p>
   
   <p>Als er <em>geen</em> kant-en-klaar pakket beschikbaar is, kan
   <tt>ttb</tt> ook redelijk eenvoudig handmatig geïnstalleerd worden, met de
   volgende stappen:
  <ul>
-   <li>Download <a href="http://www.djcbsoftware.nl/code/ttb/ttb-1.0.tar.gz" >ttb-1.0.tar.gz</a>
-   <li>Vanaf de commandline:
-   <pre><tt>
-      $ tar xvfz ttb-1.0.tar.gz
-      $ cd ttb-1.0/
-  </tt></pre>
 
-  En nu als rootgebruiker (of '<tt>sudo</tt>'):
-  <pre><tt>
-      # python ./setup.py -v install
-  </tt></pre>
-   
-   <li>Als alles goed is gegaan staat ttb nu in het "startmenu" van GNOME/KDE/...; of <tt>ttb</tt> kan gestart worden vanaf de commandline, met het command <tt>ttb</tt> (of zelfs <tt>ttb 101</tt> om direct naar het laatste nieuws te gaan).
- </ul>
+   <li>Download <a href="http://www.djcbsoftware.nl/code/ttb/ttb-1.0.tar.gz"
+   >ttb-1.0.tar.gz</a>
+
+   <li>Vanaf de commandline: <pre><tt> $ tar xvfz ttb-1.0.tar.gz $ cd ttb-1.0/
+   </tt></pre>
+
+   En nu als rootgebruiker (of '<tt>sudo</tt>') (*): <pre><tt> # python
+   ./setup.py -v install </tt></pre>
+
+   <li>Als alles goed is gegaan staat ttb nu in het "startmenu" van
+   GNOME/KDE/...; of <tt>ttb</tt> kan gestart worden vanaf de commandline, met
+   het command <tt>ttb</tt> (of zelfs <tt>ttb 101</tt> om direct naar het
+   laatste nieuws te gaan).
+
+   <li>Als het <strong>niet</strong> goed gaat: laat het <a
+ href="mailto:djcb@djcbsoftware.nl" >me weten</a>, graag met alle relevante
+ details, foutmeldingen e.d.  </ul> <small>(*): eventueel kan
+ bijv. <tt>--home=/usr/local</tt> gebruikt worden om de installatiedir te
+ wijzingen</small>
+ 
 </div>
 
 </div>
-
 </div></div>
 
 <div id="foot">
