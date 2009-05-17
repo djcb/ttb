@@ -12,6 +12,7 @@ URL: http://www.djcbsoftware.nl/code/ttb
 License: GPL
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-buildroot
+Vendor: Dirk-Jan C. Binnema
 
 %description
 TTB Teletekst Browser is a small browser for the teletekst system
@@ -22,21 +23,13 @@ up to date with news, sports, weather, stock exchange and what not
 %setup -n %{name}-%{version}
 
 %install
-mkdir -p ${RPM_BUILD_ROOT}/usr/bin
-mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
-mkdir -p ${RPM_BUILD_ROOT}/usr/share/pixmaps
-mkdir -p ${RPM_BUILD_ROOT}/usr/share/ttb
+./setup.py -v install --prefix="${RPM_BUILD_ROOT}/usr"
 mkdir -p ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}
-cp src/ttb ${RPM_BUILD_ROOT}/usr/bin
-cp glade/ttb.glade ${RPM_BUILD_ROOT}/usr/share/ttb
-cp images/ttb.png ${RPM_BUILD_ROOT}/usr/share/pixmaps
-cp ttb.desktop ${RPM_BUILD_ROOT}/usr/share/applications
-cp [ALMP]* ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}
+cp -av [ALMP]* ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}
 
 %clean
 [ "${RPM_BUILD_ROOT}" != "/" ] && %{__rm} -rf ${RPM_BUILD_ROOT}
-cd ..
-rm -rf %{name}-%{version}
+rm -rf ${RPM_BUILD_DIR}/%{name}-%{version}
 
 %files
 /usr/bin/ttb
