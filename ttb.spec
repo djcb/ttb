@@ -1,5 +1,5 @@
 %define name    ttb
-%define version 1.0
+%define version 1.0.1
 %define release 1
 
 Summary: TTB Teletekst Browser

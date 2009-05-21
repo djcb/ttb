@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2009-05-21 10:48:51 (djcb)>
+# Time-stamp: <2009-05-21 15:44:12 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -44,7 +44,7 @@ from HTMLParser import HTMLParser
 from optparse import OptionParser
 import re
 
-ttb_version = '1.0'
+ttb_version = '1.0.1'
 ttb_user_agent = "TTB/" + ttb_version
 ttb_title = "TTB Teletekst Browser"
 ttb_cache_time = 300

@@ -2,7 +2,7 @@
 #-*-mode:python-*-
 #
 # distutils setup script for ttb
-# Time-stamp: <2009-05-11 21:29:11 (djcb)>
+# Time-stamp: <2009-05-21 15:43:22 (djcb)>
 #
 
 import sys
@@ -25,7 +25,7 @@ except:
     """)
 
 name = 'ttb'
-version = '1.0'
+version = '1.0.1'
 long_desc = '''
 TTB Teletekst Browser is a small browser for the Teletekst system
 as used in The Netherlands, and provides a convenient way to stay
