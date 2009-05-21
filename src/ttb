@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2009-05-11 22:29:46 (djcb)>
+# Time-stamp: <2009-05-21 10:48:51 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -126,7 +126,7 @@ class PageManager:
         return self.page
     
     # move to another page; in case the page changes.
-    # the subpage will be set to !
+    # the subpage will be set to 1
     def goto_neighbour_page (self,prev=0,sub=0):
 
         neighbour_page = self.metainfo.neighbour_page (self.page,prev,sub)
@@ -135,9 +135,9 @@ class PageManager:
             delta = (+1,-1)[prev]
             neighbour_page = self.page
             if sub:
-                neighbour_page[1] = neighbour_page[1] + delta
+                neighbour_page = (neighbour_page[0], neighbour_page[1] + delta)
             else:
-                neighbour_page[0] = neighbour_page[0] + delta
+                neighbour_page = (neighbour_page[0] + delta, neighbour_page[1])
           
         return self.goto_page (neighbour_page)
     
