@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=TTB Teletekst Browser
 Name[nl]=TTB Teletekst Browser
 Comment=Teletekst Browser
@@ -8,6 +7,6 @@ TryExec=ttb
 Exec=ttb
 Type=Application
 Terminal=false
-Categories=Application;Gtk;Network;
-Icon=ttb.png
+Categories=Network;
+Icon=ttb
 
