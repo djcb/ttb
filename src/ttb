@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2009-05-21 15:44:12 (djcb)>
+# Time-stamp: <2009-10-09 00:48:28 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -54,6 +54,13 @@ ttb_glade_data = 'ttb/ttb.glade'
 ttb_icon_data  = 'pixmaps/ttb.png'
 
 ttb_debug = 0
+
+class TTBException:
+    def __init__ (self,msg):
+        self.msg = msg
+    def msg (self):
+        return msg
+
 
 #
 # our main application class
@@ -158,13 +165,17 @@ class PageManager:
                 self.history.append (page)
         except:      
             if (page[1] != 1):
-                page[1] = 1
+                page = (page[0],1)
                 return self.goto_page (page,nocache,add_to_history)
             else:    
                 print "error retrieving page " + str(page)
-                self.image_file = self.network.retrieve_error_page()
-                return self.page 
-                               
+
+                try: 
+                    self.image_file = self.network.retrieve_error_page()
+                    return self.page
+                except:
+                    error_exit ("Verbinding met Teletekst mislukt!")
+                    
         self.image_file = new_image
         self.metainfo = metainfo
         self.page = page
@@ -309,7 +320,7 @@ class GUI:
         elif how == self.size.BIGGER:
             self.size.grow()
         else:
-            raise "illegal size for zooming"
+            raise TTBException("illegal size for zooming")
             
         self.update()
         self.look_busy(0)
@@ -775,7 +786,7 @@ class Network:
             try:
                 data = self.http_get (gif)
             except:
-                raise "could not retrieve " + gif
+                raise TTBException("could not retrieve " + gif)
                 
             # save the gif to a tempfile
             imgfile = open (localimg,'w')
@@ -789,7 +800,7 @@ class Network:
                 html = self.http_get(html)
                 data = html.replace('<script','<!--').replace('</script>','-->')
             except:
-               raise "could not retrieve " + html
+                raise TTBException("could not retrieve " + html)
                
             htmlfile = open (localhtml,'w')
             htmlfile.write (data)
@@ -814,7 +825,7 @@ class Network:
             try:
                 data = self.http_get (errorgif)
             except:
-                raise "could not retrieve " + errorgif
+                raise TTBException ("could not retrieve " + errorgif)
     
             # save the gif to a tempfile
             imgfile = open (localerr,'w')
@@ -835,7 +846,7 @@ def get_data_dir ():
         if os.path.isdir (fp):
             return fp
 
-    raise "Could not find data directory"
+    raise TTBException("Could not find data directory")
 
 def get_data_file (name):
 
@@ -844,10 +855,22 @@ def get_data_file (name):
     if os.path.isfile(fp):
         return fp
 
-    raise "Could not find " + name
+    raise TTBException("Could not find " + name)
 
+
+def error_exit (msg):
+
+    dialog = gtk.MessageDialog(
+        flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+        type = gtk.MESSAGE_ERROR,
+        buttons = gtk.BUTTONS_OK,
+        message_format = msg)
+    dialog.set_title("TTB Error")
+
+    dialog.run()
+
+    sys.exit(1)
       
-
 
 def main (argv=None):
     
@@ -879,6 +902,9 @@ def main (argv=None):
     
     except KeyboardInterrupt:
         return 0
+
+    except TTBException as ex:
+        error_exit (ex.msg)
     
     return 0
 
