@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*-mode:python-*-*
-# Time-stamp: <2009-10-09 00:48:28 (djcb)>
+# Time-stamp: <2010-01-10 11:45:29 (djcb)>
 #
 # Browser for Teletekst pages
 #
@@ -903,7 +903,8 @@ def main (argv=None):
     except KeyboardInterrupt:
         return 0
 
-    except TTBException as ex:
+    # note 'as' for the comma below does not work before python 2.6
+    except TTBException, ex:
         error_exit (ex.msg)
     
     return 0
